@@ -1,0 +1,27 @@
+{
+  "name": "YouTubeMusicDownloader",
+  "version": "0.0.0",
+  "description": "YouTube music downloader",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:guzmonne/YouTubeMusicDownloader.git"
+  },
+  "keywords": [
+    "YouTube",
+    "Music",
+    "Downloader"
+  ],
+  "author": "Guzmán Monné",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/guzmonne/YouTubeMusicDownloader/issues"
+  },
+  "homepage": "https://github.com/guzmonne/YouTubeMusicDownloader"
+}
