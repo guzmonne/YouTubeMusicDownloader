@@ -23,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/guzmonne/YouTubeMusicDownloader/issues"
   },
-  "homepage": "https://github.com/guzmonne/YouTubeMusicDownloader"
+  "homepage": "https://github.com/guzmonne/YouTubeMusicDownloader",
+  "dependencies": {
+    "copy-paste": "^1.0.1",
+    "lodash": "^2.4.1"
+  }
 }
