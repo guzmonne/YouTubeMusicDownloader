@@ -1,6 +1,7 @@
 # Logs
 logs
 *.log
+*.m4a
 
 # Runtime data
 pids

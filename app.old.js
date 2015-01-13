@@ -487,6 +487,7 @@ function downloadFile(youtube_url, callback){
 	if(checkResult.valid){
 		nodeYouTubeDownloader.getVideoInfo(checkResult.vid, function(infos){
 			videos = nodeYouTubeDownloader.parseVideoInfo(infos);
+			if (!videos) return downloadNext();
 			_.each(videos.data, function(video){
 				if (video.itag === '140' || video.itag === '141'){
 					video.name = videos.name;
