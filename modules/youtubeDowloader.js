@@ -5,8 +5,8 @@ var http         = require('http');
 var fs           = require('fs');
 var ffmpeg       = require('fluent-ffmpeg');
 
-var queue   = [];
-var working = false;
+var queue     = [];
+var working   = false;
 var downloads = [];
 
 function pushToQueue(youtube_url){
@@ -57,7 +57,7 @@ function nextVideo(){
 function startDownload(video){
 	var file_url = video.url;
 	var file_size;
-	var completed;
+	var downloaded;
 	
 	try{
 			var options = {
@@ -85,14 +85,13 @@ function startDownload(video){
 			video.downloaded = 0;
 			downloads.push(video);
 
-
 			res.on('data', function(data) {
 				file.write(data);
-				completed = parseInt(parseInt(file.bytesWritten) / file_size * 100) + '%'
+				downloaded = parseInt(parseInt(file.bytesWritten) / file_size * 100) + '%'
 				process.stdout.clearLine();
 				process.stdout.cursorTo(0);
-				process.stdout.write('Completed ' + completed);
-				video.downloaded = 
+				process.stdout.write('Downloaded ' + downloaded + ' from ' + file_name);
+				video.downloadedPercentage = downloaded;
 			}).on('end', function() {
 				file.end();
 				process.stdout.clearLine();
@@ -101,16 +100,20 @@ function startDownload(video){
 					process.stdout.write("video download complete.\n");
 					process.stdout.write("Still "+ queue.length +" files to download\n");
 				}
-				working = false;
-				convertVideo(file_name, video.name);
+				working          = false;
+				video.downloaded = true;
+				convertVideo(file_name, video);
 				queueManager();
-			}).on('error', function(err){ console.log(err); });
+			}).on('error', function(err){ 
+				console.log(err); 
+				video.error = err;
+			});
 		}
 	});
 }
 
-function convertVideo(file_name, result_name){
-	var save_location = './Audio/' + result_name + '.mp3';
+function convertVideo(file_name, video){
+	var save_location = './Audio/' + video.name + '.mp3';
 	ffmpeg(file_name)
 		.audioCodec('libmp3lame')
 		.audioChannels(2)
@@ -120,16 +123,19 @@ function convertVideo(file_name, result_name){
 			process.stdout.cursorTo(0);
 			process.stdout.write(result_name + '.mp3 converted successfully');
 			fs.unlink(file_name);
+			video.converted = true;
 		})
-		.on('error', function(){
+		.on('error', function(err){
 			process.stdout.clearLine();
 			process.stdout.cursorTo(0);
 			process.stdout.write('Something heppend while converting ' + result_name + '.mp3');
+			video.error = err;
 		})
 		.on('progress', function(info){
 			process.stdout.clearLine();
 			process.stdout.cursorTo(0);
 			process.stdout.write(result_name + '.mp3 ' + info.percent + '% done...');
+			video.convertedPercentage = info.percent;
 		})
 		.on('start', function(){
 			process.stdout.clearLine();
